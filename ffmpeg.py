@@ -2,6 +2,7 @@
 
 import subprocess
 import pathlib
+import tempfile
 
 # TODO: Configurable
 FFMPEG_COMMAND = "ffmpeg"
@@ -32,3 +33,35 @@ def merge_audio_and_video(
     ffmpeg_args = [arg for arg_tuple in args for arg in arg_tuple]
     output = subprocess.run(ffmpeg_args)
     return output.returncode == 0
+
+
+# Assumes all videos have the same encoding
+def concat_videos(videos: [pathlib.Path], output_file: pathlib.Path) -> bool:
+    with tempfile.NamedTemporaryFile(mode="w") as concat_file:
+        files = ("\n").join(f"file {video.resolve()}" for video in videos)
+        concat_file.write(files)
+        concat_file.flush()
+        args = (
+            (FFMPEG_COMMAND,),
+            (
+                "-f",
+                "concat",
+            ),
+            (
+                "-safe",
+                "0",
+            ),
+            (
+                "-i",
+                concat_file.name,
+            ),
+            (
+                "-c",
+                "copy",
+            ),
+            ("-xerror",),
+            (output_file,),
+        )
+        ffmpeg_args = [arg for arg_tuple in args for arg in arg_tuple]
+        output = subprocess.run(ffmpeg_args)
+        return output.returncode == 0
