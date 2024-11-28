@@ -35,21 +35,32 @@ def render(replay: replay.ReplayFile, dump_dir: pathlib.Path):
             ini.make_dolphin_file(userdir) as dolphin_file,
             ini.make_gfx_file(userdir) as gfx_file,
         ):
-            dolphin_args = [
-                DOLPHIN_PATH,
-                "-e",
-                MELEE_ISO_PATH,
-                "-b",
-                "-v",
-                VIDEO_BACKEND,
-                "-i",
-                comm_file,
-                "--hide-seekbar",
-                "--output-directory",
-                dump_dir,
-                "--user",
-                userdir,
-            ]
+            args = (
+                (DOLPHIN_PATH,),
+                (
+                    "-e",
+                    MELEE_ISO_PATH,
+                ),
+                ("-b",),
+                (
+                    "-v",
+                    VIDEO_BACKEND,
+                ),
+                (
+                    "-i",
+                    comm_file,
+                ),
+                ("--hide-seekbar",),
+                (
+                    "--output-directory",
+                    dump_dir,
+                ),
+                (
+                    "--user",
+                    userdir,
+                ),
+            )
+            dolphin_args = [arg for arg_tuple in args for arg in arg_tuple]
             proc = subprocess.Popen(args=dolphin_args)
             frames_file = userdir.joinpath("Logs", "render_time.txt")
             expected_frames = replay.get_expected_number_of_frames()
