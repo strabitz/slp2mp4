@@ -79,6 +79,6 @@ def run_dolphin(replay: replay.ReplayFile, dump_dir: pathlib.Path):
                 print("Timed out waiting for Dolphin to terminate")
                 proc.kill()
     # TODO: Detect other paths; when do other paths happen?
-    audio_file = dump_dir.join("dspdump.wav")
-    video_file = dump_dir.join("framedump0.avi")
+    audio_file = dump_dir.joinpath("dspdump.wav")
+    video_file = dump_dir.joinpath("framedump0.avi")
     return audio_file, video_file
