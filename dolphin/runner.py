@@ -27,7 +27,7 @@ def _get_number_of_frames_rendered(frames_file: pathlib.Path) -> int:
         return 0
 
 
-def render(replay: replay.ReplayFile, dump_dir: pathlib.Path):
+def run_dolphin(replay: replay.ReplayFile, dump_dir: pathlib.Path):
     with tempfile.TemporaryDirectory() as userdir_str:
         userdir = pathlib.Path(userdir_str)
         with (
