@@ -78,4 +78,7 @@ def render(replay: replay.ReplayFile, dump_dir: pathlib.Path):
             except subprocess.TimeoutExpired as t:
                 print("Timed out waiting for Dolphin to terminate")
                 proc.kill()
-    # TODO: Return framedump / dsdump?
+    # TODO: Detect other paths; when do other paths happen?
+    audio_file = dump_dir.join("dspdump.wav")
+    video_file = dump_dir.join("framedump0.avi")
+    return audio_file, video_file
