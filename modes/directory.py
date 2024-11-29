@@ -3,12 +3,13 @@
 
 import pathlib
 import tempfile
+import multiprocessing
 
 import video
 import util
 import ffmpeg
 
-# TODO: multiprocess
+# TODO: Make multiprocessing more efficient
 
 
 def _render_directory(conf, directory: pathlib.Path):
@@ -29,15 +30,16 @@ def _render_directory(conf, directory: pathlib.Path):
     return output
 
 
-def _recursive_iter(conf, directory: pathlib.Path, outputs=None):
-    if outputs is None:
-        outputs = []
-    outputs.append(_render_directory(conf, directory))
+def _get_directories(conf, directory: pathlib.Path):
+    outputs = [directory]
     for child in directory.iterdir():
         if child.is_dir():
-            outputs.append(_recursive_iter(conf, child, outputs))
+            outputs.extend(_get_directories(conf, child))
     return outputs
 
 
 def gather(conf, path: pathlib.Path):
-    return _recursive_iter(conf, path)
+    dirs = _get_directories(conf, path)
+    args = [(conf, d) for d in dirs]
+    pool = multiprocessing.Pool(conf["runtime"]["parallel"])
+    pool.starmap(_render_directory, args)
