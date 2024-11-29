@@ -20,6 +20,7 @@ class FfmpegRunner:
     ) -> bool:
         args = (
             (self.ffmpeg_path,),
+            ("-y",),
             (
                 "-i",
                 audio_file,
@@ -46,6 +47,7 @@ class FfmpegRunner:
             concat_file.flush()
             args = (
                 (self.ffmpeg_path,),
+                ("-y",),
                 (
                     "-f",
                     "concat",
