@@ -24,7 +24,10 @@ class DolphinRunner:
         self.ssbm_ini = config["paths"]["ssbm_ini"]
         self.video_backend = config["video"]["backend"]
         self.user_gfx = {
-            "Settings": {"EFBScale": config["video"]["resolution"]},
+            "Settings": {
+                "EFBScale": config["video"]["resolution"],
+                "BitrateKbps": config["video"]["bitrate"],
+            },
         }
 
     def run_dolphin(self, replay: replay.ReplayFile, dump_dir: pathlib.Path):

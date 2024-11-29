@@ -28,6 +28,7 @@ CONSTRUCTORS = {
     },
     "video": {
         "resolution": _parse_resolution,
+        "bitrate": str,
     },
 }
 

@@ -6,3 +6,4 @@ ssbm_ini = "~/Super Smash Bros. Melee (USA) (En,Ja) (Rev 2).iso"
 [video]
 backend = "OGL"
 resolution = "1080p"
+bitrate = 16000
