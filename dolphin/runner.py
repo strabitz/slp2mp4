@@ -23,6 +23,9 @@ class DolphinRunner:
         self.slippi_playback = config["paths"]["slippi_playback"]
         self.ssbm_ini = config["paths"]["ssbm_ini"]
         self.video_backend = config["video"]["backend"]
+        self.user_gfx = {
+            "Settings": {"EFBScale": config["video"]["resolution"]},
+        }
 
     def run_dolphin(self, replay: replay.ReplayFile, dump_dir: pathlib.Path):
         with tempfile.TemporaryDirectory() as userdir_str:
@@ -30,7 +33,7 @@ class DolphinRunner:
             with (
                 comm.make_temp_file(replay) as comm_file,
                 ini.make_dolphin_file(userdir) as dolphin_file,
-                ini.make_gfx_file(userdir) as gfx_file,
+                ini.make_gfx_file(userdir, self.user_gfx) as gfx_file,
             ):
                 args = (
                     (self.slippi_playback,),

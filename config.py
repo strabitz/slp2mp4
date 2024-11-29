@@ -5,6 +5,8 @@ import pathlib
 import tomllib
 import typing
 
+import util
+
 DEFAULT_CONFIG_FILE = pathlib.Path("defaults.toml")
 USER_CONFIG_FILE = pathlib.Path("~/.slp2mp4.toml").expanduser()
 
@@ -13,23 +15,21 @@ def _path(p):
     return pathlib.Path(p).expanduser()
 
 
+def _parse_resolution(r):
+    resolutions = {"480p": "2", "720p": "3", "1080p": "5", "1440p": "6", "2160p": "8"}
+    return resolutions[r]
+
+
 CONSTRUCTORS = {
     "paths": {
         "ffmpeg": _path,
         "slippi_playback": _path,
         "ssbm_ini": _path,
     },
+    "video": {
+        "resolution": _parse_resolution,
+    },
 }
-
-
-def _update_dict(d1: dict, d2: dict):
-    for k, v in d2.items():
-        if isinstance(v, dict):
-            if k not in d1:
-                d1[k] = {}
-            _update_dict(d1[k], d2[k])
-        else:
-            d1[k] = v
 
 
 def _apply_constructors(conf: dict, constructors: dict):
@@ -45,7 +45,7 @@ def _load_configs(config_files: [pathlib.Path]) -> dict:
     for file in config_files:
         with open(file, "rb") as f:
             data = tomllib.load(f)
-            _update_dict(conf, data)
+            util.update_dict(conf, data)
     _apply_constructors(conf, CONSTRUCTORS)
     return conf
 

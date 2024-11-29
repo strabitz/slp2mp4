@@ -9,6 +9,8 @@ import configparser
 import contextlib
 import pathlib
 
+import util
+
 
 @contextlib.contextmanager
 def make_ini_file(filename: pathlib.Path, contents: dict):
@@ -54,13 +56,14 @@ def make_dolphin_file(userdir: pathlib.Path):
 
 
 @contextlib.contextmanager
-def make_gfx_file(userdir: pathlib.Path):
+def make_gfx_file(userdir: pathlib.Path, user_settings):
     # Could use Settings.DumpFramesAsImages, then detect all-black images
     settings = {
         "Settings": {
             "LogRenderTimeToFile": "True",  # Used to monitor render progress
         },
     }
+    util.update_dict(settings, user_settings)
     filename = userdir.joinpath("Config", "GFX.ini")
     with make_ini_file(filename, settings) as (name, handle):
         yield name
