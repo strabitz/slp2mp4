@@ -1,8 +1,9 @@
 # Logic for joining audio / video files
 
-import subprocess
 import pathlib
 import tempfile
+
+import util
 
 
 class FfmpegRunner:
@@ -34,9 +35,8 @@ class FfmpegRunner:
             ("-xerror",),
             (output_file,),
         )
-        ffmpeg_args = [arg for arg_tuple in args for arg in arg_tuple]
-        output = subprocess.run(ffmpeg_args)
-        return output.returncode == 0
+        ffmpeg_args = util.flatten_arg_tuples(args)
+        return util.run_and_check(ffmpeg_args)
 
     # Assumes all videos have the same encoding
     def concat_videos(self, videos: [pathlib.Path], output_file: pathlib.Path) -> bool:
@@ -65,6 +65,5 @@ class FfmpegRunner:
                 ("-xerror",),
                 (output_file,),
             )
-            ffmpeg_args = [arg for arg_tuple in args for arg in arg_tuple]
-            output = subprocess.run(ffmpeg_args)
-            return output.returncode == 0
+            ffmpeg_args = util.flatten_arg_tuples(args)
+            return util.run_and_check(ffmpeg_args)
