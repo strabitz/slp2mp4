@@ -40,4 +40,4 @@ def _recursive_iter(conf, directory: pathlib.Path, outputs=None):
 
 
 def gather(conf, path: pathlib.Path):
-    outputs = _recursive_iter(conf, path)
+    return _recursive_iter(conf, path)
