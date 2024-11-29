@@ -41,7 +41,7 @@ class FfmpegRunner:
     # Assumes all videos have the same encoding
     def concat_videos(self, videos: [pathlib.Path], output_file: pathlib.Path) -> bool:
         with tempfile.NamedTemporaryFile(mode="w") as concat_file:
-            files = ("\n").join(f"file {video.resolve()}" for video in videos)
+            files = ("\n").join(f"file '{video.resolve()}'" for video in videos)
             concat_file.write(files)
             concat_file.flush()
             args = (
