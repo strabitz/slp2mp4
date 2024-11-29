@@ -1,6 +1,7 @@
 # Misc. utilities
 
 import subprocess
+import re
 
 
 def update_dict(d1: dict, d2: dict):
@@ -20,3 +21,10 @@ def flatten_arg_tuples(args):
 def run_and_check(args):
     output = subprocess.run(args)
     return output.returncode == 0
+
+
+# https://stackoverflow.com/a/78930347/2238176
+def natsort(s):
+    a = re.split(r"(\d+)", str(s).casefold())
+    a[1::2] = map(int, a[1::2])
+    return a
