@@ -20,6 +20,10 @@ def _parse_resolution(r):
     return resolutions[r]
 
 
+def _parse_parallel(p):
+    return None if (p == 0) else p
+
+
 CONSTRUCTORS = {
     "paths": {
         "ffmpeg": _path,
@@ -29,6 +33,9 @@ CONSTRUCTORS = {
     "video": {
         "resolution": _parse_resolution,
         "bitrate": str,
+    },
+    "runtime": {
+        "parallel": _parse_parallel,
     },
 }
 
