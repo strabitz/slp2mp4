@@ -1,6 +1,7 @@
 # Convert a group of replays in a directory into a video
 # Outputs the video to the current directory
 
+import argparse
 import pathlib
 import tempfile
 import multiprocessing
@@ -57,7 +58,8 @@ def _concat(conf, video_queue, inputs_and_outputs):
             os.unlink(tmp)
 
 
-def gather(conf, path: pathlib.Path):
+def run(conf, args):
+    path = args.path
     inputs_and_outputs = _get_inputs_and_outputs(path)
 
     slp_queue = multiprocessing.Queue()
@@ -107,3 +109,12 @@ def gather(conf, path: pathlib.Path):
 
     video_pool.close()
     video_pool.join()
+
+
+def register(subparser):
+    parser = subparser.add_parser(
+        "directory",
+        help="render and combine .slp files in a directory to a video, recursively",
+    )
+    parser.add_argument("path", type=pathlib.Path)
+    parser.set_defaults(run=run)

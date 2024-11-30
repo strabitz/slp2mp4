@@ -9,14 +9,14 @@ import modes
 submodules_tuple = inspect.getmembers(modes, inspect.ismodule)
 submodules_dict = {mod[0]: mod[1] for mod in submodules_tuple}
 
-# TODO: subcommands where module provides description / actions
 # TODO: output path
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=sorted(list(submodules_dict)))
-    parser.add_argument("path", type=pathlib.Path)
+    subparser = parser.add_subparsers(help="run mode", required=True)
+    for submodule in submodules_dict.values():
+        submodule.register(subparser)
     args = parser.parse_args()
 
     conf = config.get_config()
-    submodules_dict[args.mode].gather(conf, args.path)
+    args.run(conf, args)
