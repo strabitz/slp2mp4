@@ -9,6 +9,9 @@ import modes
 submodules_tuple = inspect.getmembers(modes, inspect.ismodule)
 submodules_dict = {mod[0]: mod[1] for mod in submodules_tuple}
 
+# TODO: subcommands where module provides description / actions
+# TODO: output path
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("mode", choices=sorted(list(submodules_dict)))
