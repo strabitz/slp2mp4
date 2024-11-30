@@ -51,6 +51,7 @@ def _apply_constructors(conf: dict, constructors: dict):
 
 
 def _load_configs(config_files: [pathlib.Path]) -> dict:
+    # TODO: Try open; skip if not found
     conf = {}
     for file in config_files:
         with open(file, "rb") as f:

@@ -2,7 +2,7 @@
 # https://github.com/dolphin-emu/fifoci/
 
 # TODO: Disable "waiting for game" screen
-# TODO: More config options
+# TODO: More config options (e.g. widescreen, gecko codes, hide tags)
 
 import configparser
 import contextlib
