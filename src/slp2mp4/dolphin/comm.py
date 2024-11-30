@@ -6,7 +6,7 @@ import tempfile
 import json
 import contextlib
 
-import replay
+import slp2mp4.replay as replay
 
 
 @contextlib.contextmanager

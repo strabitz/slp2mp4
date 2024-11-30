@@ -3,7 +3,7 @@
 import pathlib
 import tempfile
 
-import util
+import slp2mp4.util as util
 
 
 class FfmpegRunner:

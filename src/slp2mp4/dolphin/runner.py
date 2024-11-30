@@ -5,10 +5,10 @@ import time
 import pathlib
 import subprocess
 
-import replay
-import dolphin.comm as comm
-import dolphin.ini as ini
-import util
+import slp2mp4.replay as replay
+import slp2mp4.dolphin.comm as comm
+import slp2mp4.dolphin.ini as ini
+import slp2mp4.util as util
 
 
 def _get_number_of_frames_rendered(frames_file: pathlib.Path) -> int:

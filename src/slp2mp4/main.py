@@ -3,13 +3,14 @@ import inspect
 import pathlib
 import argparse
 
-import config
-import modes
+import slp2mp4.config as config
+import slp2mp4.modes as modes
 
 submodules_tuple = inspect.getmembers(modes, inspect.ismodule)
 submodules_dict = {mod[0]: mod[1] for mod in submodules_tuple}
 
-if __name__ == "__main__":
+
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-o",
@@ -33,3 +34,7 @@ if __name__ == "__main__":
             print(f"{out_file}:")
             for i in input_files:
                 print(f"\t{i}")
+
+
+if __name__ == "__main__":
+    main()

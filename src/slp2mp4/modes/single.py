@@ -2,8 +2,7 @@ import argparse
 import pathlib
 import os
 
-import video
-import pathlib
+import slp2mp4.video as video
 
 
 def run(conf, args):

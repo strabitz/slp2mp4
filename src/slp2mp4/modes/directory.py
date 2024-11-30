@@ -5,9 +5,9 @@ import multiprocessing
 import queue
 import os
 
-import video
-import util
-import ffmpeg
+import slp2mp4.video as video
+import slp2mp4.util as util
+import slp2mp4.ffmpeg as ffmpeg
 
 
 def _get_inputs_and_outputs(

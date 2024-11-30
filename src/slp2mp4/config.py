@@ -4,10 +4,12 @@ import dataclasses
 import pathlib
 import tomllib
 import typing
+import importlib.resources
 
-import util
+import slp2mp4
+import slp2mp4.util as util
 
-DEFAULT_CONFIG_FILE = pathlib.Path("defaults.toml")
+DEFAULT_CONFIG_FILE = importlib.resources.files(slp2mp4).joinpath("defaults.toml")
 USER_CONFIG_FILE = pathlib.Path("~/.slp2mp4.toml").expanduser()
 
 

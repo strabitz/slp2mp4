@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "slp2mp4"
+version = "3.0.0"
+description = "Convert slippi replays to videos"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = [
+    "slippi",
+    "slp",
+    "ssbm",
+    "mp4",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "peppi-py>=0.7.1",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "src/slp2mp4/*.py",
+  "src/slp2mp4/*.toml",
+]
+
+[project.urls]
+Homepage = "https://github.com/davisdude/slp2mp4"
+Issues = "https://github.com/davisdude/slp2mp4/issues"
+
+[project.scripts]
+slp2mp4 = "slp2mp4.main:main"

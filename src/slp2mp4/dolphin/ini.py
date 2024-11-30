@@ -8,7 +8,7 @@ import configparser
 import contextlib
 import pathlib
 
-import util
+import slp2mp4.util as util
 
 
 @contextlib.contextmanager
