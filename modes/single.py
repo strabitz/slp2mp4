@@ -1,5 +1,6 @@
 import argparse
 import pathlib
+import os
 
 import video
 import pathlib
@@ -7,7 +8,9 @@ import pathlib
 
 def run(conf, args):
     path = args.path
-    output = f"{path.parent.joinpath(path.stem)}.mp4"
+    output_directory = args.output_directory
+    os.makedirs(output_directory, exist_ok=True)
+    output = f"{output_directory.joinpath(path.stem)}.mp4"
     video.render(conf, path, output)
     return [output]
 

@@ -1,6 +1,3 @@
-# Convert a group of replays in a directory into a video
-# Outputs the video to the current directory
-
 import argparse
 import pathlib
 import tempfile
@@ -13,16 +10,19 @@ import util
 import ffmpeg
 
 
-def _get_inputs_and_outputs(directory: pathlib.Path):
+def _get_inputs_and_outputs(
+    root: pathlib.Path, in_dir: pathlib.Path, out_dir: pathlib.Path
+):
     outputs = {}
-    slps = list(sorted(directory.glob("*.slp"), key=util.natsort))
-    # TODO: Make relative to "root" path
-    name = f"""./{("_").join(directory.parts)}.mp4"""
+    slps = list(sorted(in_dir.glob("*.slp"), key=util.natsort))
+    root_name = pathlib.Path(root.resolve().name)
+    relative_path = root_name.joinpath(in_dir.relative_to(root))
+    name = f"""{out_dir.joinpath(("_").join(relative_path.parts))}.mp4"""
     if len(slps) > 0:
         outputs[name] = slps
-    for child in directory.iterdir():
+    for child in in_dir.iterdir():
         if child.is_dir():
-            outputs = outputs | _get_inputs_and_outputs(child)
+            outputs = outputs | _get_inputs_and_outputs(root, child, out_dir)
     return outputs
 
 
@@ -54,13 +54,16 @@ def _concat(conf, video_queue, inputs_and_outputs):
         tmpfiles = [outputs[key][path] for path in inputs_and_outputs[key]]
         output_file = key
         Ffmpeg.concat_videos([pathlib.Path(t) for t in tmpfiles], output_file)
+        print(output_file)
         for tmp in tmpfiles:
             os.unlink(tmp)
 
 
 def run(conf, args):
     path = args.path
-    inputs_and_outputs = _get_inputs_and_outputs(path)
+    output_directory = args.output_directory
+    os.makedirs(output_directory, exist_ok=True)
+    inputs_and_outputs = _get_inputs_and_outputs(path, path, output_directory)
 
     slp_queue = multiprocessing.Queue()
     video_queue = multiprocessing.Queue()
@@ -109,6 +112,7 @@ def run(conf, args):
 
     video_pool.close()
     video_pool.join()
+    # TODO: return outputs
 
 
 def register(subparser):

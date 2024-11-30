@@ -9,10 +9,17 @@ import modes
 submodules_tuple = inspect.getmembers(modes, inspect.ismodule)
 submodules_dict = {mod[0]: mod[1] for mod in submodules_tuple}
 
-# TODO: output path
+# TODO: dryrun?
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-o",
+        "--output-directory",
+        type=pathlib.Path,
+        default=".",
+        help="output videos to this directory",
+    )
     subparser = parser.add_subparsers(help="run mode", required=True)
     for submodule in submodules_dict.values():
         submodule.register(subparser)
