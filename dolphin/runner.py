@@ -8,6 +8,7 @@ import subprocess
 import replay
 import dolphin.comm as comm
 import dolphin.ini as ini
+import util
 
 
 def _get_number_of_frames_rendered(frames_file: pathlib.Path) -> int:
@@ -63,7 +64,7 @@ class DolphinRunner:
                         userdir,
                     ),
                 )
-                dolphin_args = [arg for arg_tuple in args for arg in arg_tuple]
+                dolphin_args = util.flatten_arg_tuples(args)
                 proc = subprocess.Popen(args=dolphin_args)
                 frames_file = userdir.joinpath("Logs", "render_time.txt")
                 expected_frames = replay.get_expected_number_of_frames()

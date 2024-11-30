@@ -2,7 +2,6 @@
 # https://github.com/dolphin-emu/fifoci/
 
 # TODO: Disable "waiting for game" screen
-# TODO: Graphics enhancements
 # TODO: More config options
 
 import configparser
