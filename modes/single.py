@@ -9,10 +9,11 @@ import pathlib
 def run(conf, args):
     path = args.path
     output_directory = args.output_directory
-    os.makedirs(output_directory, exist_ok=True)
     output = f"{output_directory.joinpath(path.stem)}.mp4"
-    video.render(conf, path, output)
-    return [output]
+    if not args.dry_run:
+        os.makedirs(output_directory, exist_ok=True)
+        video.render(conf, path, output)
+    return [(output, [path])]
 
 
 def register(subparser):

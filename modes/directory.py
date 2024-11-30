@@ -26,19 +26,20 @@ def _get_inputs_and_outputs(
     return outputs
 
 
-def _render(conf, slp_queue, video_queue):
+def _render(conf, args, slp_queue, video_queue):
     while True:
         data = slp_queue.get()
         if data is None:
             break
         key, path = data
         tmp = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
-        video.render(conf, path, pathlib.Path(tmp.name))
+        if not args.dry_run:
+            video.render(conf, path, pathlib.Path(tmp.name))
         tmp.close()
         video_queue.put((key, {path: tmp.name}))
 
 
-def _concat(conf, video_queue, inputs_and_outputs):
+def _concat(conf, args, video_queue, inputs_and_outputs):
     Ffmpeg = ffmpeg.FfmpegRunner(conf)
     outputs = {}
     while True:
@@ -53,8 +54,8 @@ def _concat(conf, video_queue, inputs_and_outputs):
             continue
         tmpfiles = [outputs[key][path] for path in inputs_and_outputs[key]]
         output_file = key
-        Ffmpeg.concat_videos([pathlib.Path(t) for t in tmpfiles], output_file)
-        print(output_file)
+        if not args.dry_run:
+            Ffmpeg.concat_videos([pathlib.Path(t) for t in tmpfiles], output_file)
         for tmp in tmpfiles:
             os.unlink(tmp)
 
@@ -62,7 +63,8 @@ def _concat(conf, video_queue, inputs_and_outputs):
 def run(conf, args):
     path = args.path
     output_directory = args.output_directory
-    os.makedirs(output_directory, exist_ok=True)
+    if not args.dry_run:
+        os.makedirs(output_directory, exist_ok=True)
     inputs_and_outputs = _get_inputs_and_outputs(path, path, output_directory)
 
     slp_queue = multiprocessing.Queue()
@@ -73,6 +75,7 @@ def run(conf, args):
         _render,
         (
             conf,
+            args,
             slp_queue,
             video_queue,
         ),
@@ -82,6 +85,7 @@ def run(conf, args):
         _concat,
         (
             conf,
+            args,
             video_queue,
             inputs_and_outputs,
         ),
@@ -112,7 +116,8 @@ def run(conf, args):
 
     video_pool.close()
     video_pool.join()
-    # TODO: return outputs
+
+    return [(out, inputs) for out, inputs in inputs_and_outputs.items()]
 
 
 def register(subparser):
