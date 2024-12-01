@@ -2,6 +2,7 @@
 
 import pathlib
 import tempfile
+import subprocess
 
 import slp2mp4.util as util
 
@@ -17,7 +18,7 @@ class FfmpegRunner:
         audio_file: pathlib.Path,
         video_file: pathlib.Path,
         output_file: pathlib.Path,
-    ) -> bool:
+    ):
         args = (
             (self.ffmpeg_path,),
             ("-y",),
@@ -37,10 +38,10 @@ class FfmpegRunner:
             (output_file,),
         )
         ffmpeg_args = util.flatten_arg_tuples(args)
-        return util.run_and_check(ffmpeg_args)
+        subprocess.run(ffmpeg_args, check=True)
 
     # Assumes all videos have the same encoding
-    def concat_videos(self, videos: [pathlib.Path], output_file: pathlib.Path) -> bool:
+    def concat_videos(self, videos: [pathlib.Path], output_file: pathlib.Path):
         with tempfile.NamedTemporaryFile(mode="w") as concat_file:
             files = ("\n").join(f"file '{video.resolve()}'" for video in videos)
             concat_file.write(files)
@@ -68,4 +69,4 @@ class FfmpegRunner:
                 (output_file,),
             )
             ffmpeg_args = util.flatten_arg_tuples(args)
-            return util.run_and_check(ffmpeg_args)
+            subprocess.run(ffmpeg_args, check=True)

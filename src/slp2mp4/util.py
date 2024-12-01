@@ -18,11 +18,6 @@ def flatten_arg_tuples(args):
     return [arg for arg_tuple in args for arg in arg_tuple]
 
 
-def run_and_check(args):
-    output = subprocess.run(args)
-    return output.returncode == 0
-
-
 # https://stackoverflow.com/a/78930347/2238176
 def natsort(s):
     a = re.split(r"(\d+)", str(s).casefold())
