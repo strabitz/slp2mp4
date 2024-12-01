@@ -18,7 +18,7 @@ class ReplayFile:
         self.slp_data = peppi_py.read_slippi(str(self.slp_path), skip_frames=True)
 
     def get_slp_filename(self):
-        return str(self.slp_path)
+        return str(self.slp_path.absolute())
 
     def get_expected_number_of_frames(self):
         gameplay_frames = _READY_GO_FRAMES + self.slp_data.metadata["lastFrame"]

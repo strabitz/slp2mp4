@@ -5,6 +5,7 @@ import uuid
 import tempfile
 import json
 import contextlib
+import os
 
 import slp2mp4.replay as replay
 
@@ -17,7 +18,10 @@ def make_temp_file(replay_file: replay.ReplayFile):
         "isRealTimeMode": False,
         "commandId": str(uuid.uuid4()),
     }
-    with tempfile.NamedTemporaryFile(mode="w") as file:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False) as file:
         file.write(json.dumps(config))
-        file.flush()
-        yield file.name
+        file.close()
+        try:
+            yield file.name
+        finally:
+            os.unlink(file.name)
