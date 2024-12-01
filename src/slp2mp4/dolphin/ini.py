@@ -29,6 +29,7 @@ def make_ini_file(filename: pathlib.Path, contents: dict):
 
 @contextlib.contextmanager
 def make_dolphin_file(userdir: pathlib.Path):
+    # TODO: Try full screen / forced window size for Windows
     settings = {
         # Disables rumble, since it's annoying when rendering replays
         "Core": {
