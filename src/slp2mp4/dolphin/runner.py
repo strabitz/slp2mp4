@@ -82,7 +82,10 @@ class DolphinRunner:
                 except subprocess.TimeoutExpired as t:
                     print("Timed out waiting for Dolphin to terminate")
                     proc.kill()
-        # TODO: Detect other paths; when do other paths happen?
+                if proc.returncode != 0:
+                    raise subprocess.CalledProcessError(
+                        proc.returncode, proc.args, proc.stdout, proc.stderr
+                    )
         audio_file = dump_dir.joinpath("dspdump.wav")
         video_file = dump_dir.joinpath("framedump0.avi")
         return audio_file, video_file
