@@ -7,6 +7,7 @@ ssbm_ini = "~/Downloads/Super Smash Bros. Melee (USA) (En,Ja) (Rev 2).iso"
 backend = "Software"
 resolution = "1080p"
 bitrate = 16000
+reencode_when_merging_audio_and_video = true
 # TODO: Volume
 
 [runtime]

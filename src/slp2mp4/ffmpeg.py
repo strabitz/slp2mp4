@@ -18,6 +18,7 @@ class FfmpegRunner:
         audio_file: pathlib.Path,
         video_file: pathlib.Path,
         output_file: pathlib.Path,
+        reencode=False,
     ):
         args = (
             (self.ffmpeg_path,),
@@ -31,8 +32,12 @@ class FfmpegRunner:
                 video_file,
             ),
             (
-                "-c",
-                "copy",
+                (
+                    "-c",
+                    "copy",
+                )
+                if not reencode
+                else ()
             ),
             ("-xerror",),
             (output_file,),
