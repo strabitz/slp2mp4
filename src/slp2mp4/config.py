@@ -54,9 +54,12 @@ def _load_configs(config_files: [pathlib.Path]) -> dict:
     # TODO: Try open; skip if not found
     conf = {}
     for file in config_files:
-        with open(file, "rb") as f:
-            data = tomllib.load(f)
-            util.update_dict(conf, data)
+        try:
+            with open(file, "rb") as f:
+                data = tomllib.load(f)
+                util.update_dict(conf, data)
+        except FileNotFoundError:
+            print(f"Could not find config file {file} - skipping")
     _apply_constructors(conf, CONSTRUCTORS)
     return conf
 
