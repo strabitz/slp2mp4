@@ -65,29 +65,31 @@ class FfmpegRunner:
 
     # Assumes all videos have the same encoding
     def concat_videos(self, videos: [pathlib.Path], output_file: pathlib.Path):
-        with tempfile.NamedTemporaryFile(mode="w") as concat_file:
-            files = ("\n").join(f"file '{video.resolve()}'" for video in videos)
-            concat_file.write(files)
-            concat_file.flush()
-            args = (
-                ("-y",),
-                (
-                    "-f",
-                    "concat",
-                ),
-                (
-                    "-safe",
-                    "0",
-                ),
-                (
-                    "-i",
-                    concat_file.name,
-                ),
-                (
-                    "-c",
-                    "copy",
-                ),
-                ("-xerror",),
-                (output_file,),
-            )
-            self._run(args)
+        # Make a temp directory because windows doesn't like NamedTemporaryFiles :(
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with open(pathlib.Path(tmpdir) / "concat.txt", "w") as concat_file:
+                files = ("\n").join(f"file '{video.resolve()}'" for video in videos)
+                concat_file.write(files)
+                concat_file.flush()
+                args = (
+                    ("-y",),
+                    (
+                        "-f",
+                        "concat",
+                    ),
+                    (
+                        "-safe",
+                        "0",
+                    ),
+                    (
+                        "-i",
+                        concat_file.name,
+                    ),
+                    (
+                        "-c",
+                        "copy",
+                    ),
+                    ("-xerror",),
+                    (output_file,),
+                )
+                self._run(args)

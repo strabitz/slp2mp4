@@ -1,13 +1,7 @@
 import argparse
 import pathlib
-import tempfile
-import multiprocessing
-import queue
-import os
 
-import slp2mp4.video as video
 import slp2mp4.util as util
-import slp2mp4.ffmpeg as ffmpeg
 
 
 def _get_inputs_and_outputs(
@@ -26,98 +20,8 @@ def _get_inputs_and_outputs(
     return outputs
 
 
-def _render(conf, args, slp_queue, video_queue):
-    while True:
-        data = slp_queue.get()
-        if data is None:
-            break
-        key, path = data
-        tmp = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
-        if not args.dry_run:
-            video.render(conf, path, pathlib.Path(tmp.name))
-        tmp.close()
-        video_queue.put((key, {path: tmp.name}))
-
-
-def _concat(conf, args, video_queue, inputs_and_outputs):
-    Ffmpeg = ffmpeg.FfmpegRunner(conf)
-    outputs = {}
-    while True:
-        data = video_queue.get()
-        if data is None:
-            break
-        key, tmpfile = data
-        if key not in outputs:
-            outputs[key] = {}
-        outputs[key] = outputs[key] | tmpfile
-        if len(outputs[key]) < len(inputs_and_outputs[key]):
-            continue
-        tmpfiles = [outputs[key][path] for path in inputs_and_outputs[key]]
-        output_file = key
-        if not args.dry_run:
-            Ffmpeg.concat_videos([pathlib.Path(t) for t in tmpfiles], output_file)
-        for tmp in tmpfiles:
-            os.unlink(tmp)
-
-
 def run(conf, args):
-    path = args.path
-    output_directory = args.output_directory
-    if not args.dry_run:
-        os.makedirs(output_directory, exist_ok=True)
-    inputs_and_outputs = _get_inputs_and_outputs(path, path, output_directory)
-
-    slp_queue = multiprocessing.Queue()
-    video_queue = multiprocessing.Queue()
-
-    slp_pool = multiprocessing.Pool(
-        conf["runtime"]["parallel"],
-        _render,
-        (
-            conf,
-            args,
-            slp_queue,
-            video_queue,
-        ),
-    )
-    video_pool = multiprocessing.Pool(
-        1,
-        _concat,
-        (
-            conf,
-            args,
-            video_queue,
-            inputs_and_outputs,
-        ),
-    )
-
-    for key, slps in inputs_and_outputs.items():
-        for slp in slps:
-            slp_queue.put(
-                (
-                    key,
-                    slp,
-                )
-            )
-
-    for i in range(conf["runtime"]["parallel"]):
-        slp_queue.put(None)
-
-    slp_queue.close()
-    slp_queue.join_thread()
-
-    slp_pool.close()
-    slp_pool.join()
-
-    video_queue.put(None)
-
-    video_queue.close()
-    video_queue.join_thread()
-
-    video_pool.close()
-    video_pool.join()
-
-    return [(out, inputs) for out, inputs in inputs_and_outputs.items()]
+    return _get_inputs_and_outputs(args.path, args.path, args.output_directory)
 
 
 def register(subparser):

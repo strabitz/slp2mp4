@@ -1,10 +1,12 @@
-import subprocess
-import inspect
-import pathlib
 import argparse
+import inspect
+import os
+import pathlib
+import subprocess
 
 import slp2mp4.config as config
 import slp2mp4.modes as modes
+import slp2mp4.orchestrator as orchestrator
 
 submodules_tuple = inspect.getmembers(modes, inspect.ismodule)
 submodules_dict = {mod[0]: mod[1] for mod in submodules_tuple}
@@ -28,12 +30,13 @@ def main():
     conf = config.get_config()
     products = args.run(conf, args)
     if args.dry_run:
-        for pair in products:
-            out_file = pair[0]
-            input_files = pair[1]
+        for out_file, input_files in products.items():
             print(f"{out_file}:")
             for i in input_files:
                 print(f"\t{i}")
+    else:
+        os.makedirs(args.output_directory, exist_ok=True)
+        orchestrator.run(conf, products)
 
 
 if __name__ == "__main__":

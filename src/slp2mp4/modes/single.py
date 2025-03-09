@@ -2,17 +2,12 @@ import argparse
 import pathlib
 import os
 
-import slp2mp4.video as video
-
 
 def run(conf, args):
     path = args.path
     output_directory = args.output_directory
     output = f"{output_directory.joinpath(path.stem)}.mp4"
-    if not args.dry_run:
-        os.makedirs(output_directory, exist_ok=True)
-        video.render(conf, path, output)
-    return [(output, [path])]
+    return {output: [path]}
 
 
 def register(subparser):
