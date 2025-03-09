@@ -58,6 +58,10 @@ class FfmpegRunner:
                 "-i",
                 video_file,
             ),
+            (
+                "-avoid_negative_ts",
+                "make_zero",
+            ),
             ("-xerror",),
             (output_file,),
         )
