@@ -17,8 +17,9 @@ def render(conf, slp_path: pathlib.Path, output_path: pathlib.Path):
         tmpdir = pathlib.Path(tmpdir_str)
         r = replay.ReplayFile(slp_path)
         audio_file, video_file = Dolphin.run_dolphin(r, tmpdir)
+        reencoded_audio_file = Ffmpeg.reencode_audio(audio_file)
         Ffmpeg.merge_audio_and_video(
-            audio_file,
+            reencoded_audio_file,
             video_file,
             output_path,
             conf["video"]["reencode_when_merging_audio_and_video"],

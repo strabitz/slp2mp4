@@ -15,6 +15,31 @@ class FfmpegRunner:
         ffmpeg_args = [self.ffmpeg_path] + util.flatten_arg_tuples(args)
         subprocess.run(ffmpeg_args, check=True)
 
+    def reencode_audio(self, audio_file_path: pathlib.Path):
+        reencoded_path = audio_file_path.parent / "fixed.wav"
+        args = (
+            ("-y",),
+            (
+                "-i",
+                audio_file_path,
+            ),
+            (
+                "-ar",
+                "32000",
+            ),
+            (
+                "-c:a",
+                "pcm_s16le",
+            ),
+            (
+                "-ac",
+                "2",
+            ),
+            (reencoded_path,),
+        )
+        self._run(args)
+        return reencoded_path
+
     # Assumes output file can handle no reencoding
     # Returns True if ffmpeg ran successfully, False otherwise
     def merge_audio_and_video(
