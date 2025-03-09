@@ -42,16 +42,16 @@ class DolphinRunner:
                 args = (
                     (self.slippi_playback,),
                     (
-                        "-e",
+                        "--exec",
                         self.ssbm_ini,
                     ),
-                    ("-b",),
+                    ("--batch",),
                     (
-                        "-v",
+                        "--video_backend",
                         self.video_backend,
                     ),
                     (
-                        "-i",
+                        "--slippi-input",
                         comm_file,
                     ),
                     ("--hide-seekbar",),
