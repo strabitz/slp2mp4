@@ -20,3 +20,11 @@ TODO
 
     * Note to future self: `paths.ssbm_ini` must be the Windows file path (use
       `/` instead of `\`)
+
+* Currently using [`py-slippi`](https://github.com/hohav/py-slippi) instead of
+  [`peppi-py`](https://github.com/hohav/peppi-py) because of numerous issues
+  related to `pyarrow` and `maturin` on Windows / Mac.
+
+    * When the switch is made, the API is largely the same, but peppi's frame
+      count starts *once players are actionable* (after ready/go), while
+      py-slippi's frame count includes these frames.
