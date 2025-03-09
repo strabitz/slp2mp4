@@ -11,6 +11,10 @@ class FfmpegRunner:
     def __init__(self, config):
         self.ffmpeg_path = config["paths"]["ffmpeg"]
 
+    def _run(self, args):
+        ffmpeg_args = [self.ffmpeg_path] + util.flatten_arg_tuples(args)
+        subprocess.run(ffmpeg_args, check=True)
+
     # Assumes output file can handle no reencoding
     # Returns True if ffmpeg ran successfully, False otherwise
     def merge_audio_and_video(
@@ -21,7 +25,6 @@ class FfmpegRunner:
         reencode=False,
     ):
         args = (
-            (self.ffmpeg_path,),
             ("-y",),
             (
                 "-i",
@@ -42,8 +45,7 @@ class FfmpegRunner:
             ("-xerror",),
             (output_file,),
         )
-        ffmpeg_args = util.flatten_arg_tuples(args)
-        subprocess.run(ffmpeg_args, check=True)
+        self._run(args)
 
     # Assumes all videos have the same encoding
     def concat_videos(self, videos: [pathlib.Path], output_file: pathlib.Path):
@@ -52,7 +54,6 @@ class FfmpegRunner:
             concat_file.write(files)
             concat_file.flush()
             args = (
-                (self.ffmpeg_path,),
                 ("-y",),
                 (
                     "-f",
@@ -73,5 +74,4 @@ class FfmpegRunner:
                 ("-xerror",),
                 (output_file,),
             )
-            ffmpeg_args = util.flatten_arg_tuples(args)
-            subprocess.run(ffmpeg_args, check=True)
+            self._run(args)
