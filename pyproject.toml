@@ -7,7 +7,7 @@ name = "slp2mp4"
 version = "3.0.0"
 description = "Convert slippi replays to videos"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 keywords = [
     "slippi",
     "slp",
