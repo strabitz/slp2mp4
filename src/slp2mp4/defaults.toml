@@ -10,4 +10,4 @@ bitrate = 16000
 # TODO: Volume
 
 [runtime]
-parallel = 1
+parallel = 0

@@ -1,10 +1,11 @@
 # Handles configuration options
 
 import dataclasses
+import importlib.resources
+import os
 import pathlib
 import tomllib
 import typing
-import importlib.resources
 
 import slp2mp4
 import slp2mp4.util as util
@@ -23,7 +24,7 @@ def _parse_resolution(r):
 
 
 def _parse_parallel(p):
-    return None if (p == 0) else p
+    return os.cpu_count() if (p == 0) else p
 
 
 CONSTRUCTORS = {
