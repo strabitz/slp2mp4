@@ -24,8 +24,10 @@ def run(conf, args):
     if not args.path.exists():
         raise FileNotFoundError(args.path.name)
     if not args.path.is_dir() and zipfile.is_zipfile(args.path):
+        parent_name = args.path.resolve().absolute().parent.name
         files = [args.path]
     else:
+        parent_name = args.path.resolve().absolute().name
         files = []
         for root, _, walk_files in args.path.walk():
             for file in walk_files:
@@ -35,10 +37,12 @@ def run(conf, args):
     # Needs to persist until all conversions are done
     with tempfile.TemporaryDirectory(delete=False) as tmpdir_str:
         tmpdir = pathlib.Path(tmpdir_str)
+        tmpdir_main = tmpdir / parent_name
+        tmpdir_main.mkdir()
         atexit.register(shutil.rmtree, tmpdir)
         for file in files:
-            _recursively_unzip(file, tmpdir / file.stem)
-        return get_inputs_and_outputs(tmpdir, tmpdir, args.output_directory)
+            _recursively_unzip(file, tmpdir_main / file.stem)
+        return get_inputs_and_outputs(tmpdir_main, tmpdir_main, args.output_directory)
 
 
 def register(subparser):

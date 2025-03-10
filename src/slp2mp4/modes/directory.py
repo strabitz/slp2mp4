@@ -8,9 +8,11 @@ def get_inputs_and_outputs(
     root: pathlib.Path, in_dir: pathlib.Path, out_dir: pathlib.Path
 ):
     outputs = {}
+    root = root.resolve().absolute()
+    in_dir = in_dir.resolve().absolute()
     slps = list(sorted(in_dir.glob("*.slp"), key=util.natsort))
-    root_name = pathlib.Path(root.resolve().name)
-    relative_path = root_name.joinpath(in_dir.resolve().relative_to(root))
+    root_name = pathlib.Path(root.name)
+    relative_path = root_name.joinpath(in_dir.relative_to(root))
     name = f"""{out_dir.joinpath(("_").join(relative_path.parts))}.mp4"""
     if len(slps) > 0:
         outputs[name] = slps

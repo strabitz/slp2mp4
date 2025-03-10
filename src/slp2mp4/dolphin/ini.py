@@ -18,6 +18,7 @@ def make_ini_file(filename: pathlib.Path, contents: dict):
         ini_parser = configparser.ConfigParser(
             allow_no_value=True, delimiters=("=",), strict=False
         )
+        ini_parser.optionxform = lambda option: option
         for section, options in contents.items():
             ini_parser.add_section(section)
             for opt_name, opt_val in options.items():
