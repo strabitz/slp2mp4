@@ -35,10 +35,7 @@ class FfmpegRunner:
                 "-ac",
                 "2",
             ),
-            (
-                "-b:a",
-                "128k"
-            ),
+            ("-b:a", "128k"),
             (reencoded_path,),
         )
         self._run(args)
@@ -72,7 +69,7 @@ class FfmpegRunner:
             ),
             (
                 "-b:v",
-                "7500k",    # TODO follow setting
+                "7500k",  # TODO follow setting
             ),
             (
                 "-avoid_negative_ts",
