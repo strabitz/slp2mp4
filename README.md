@@ -8,7 +8,9 @@ TODO
 * Config / input validation
 * Mode for using files output by replay manager (zips)
 * Config path validation (during dry run)
-
+* Volume
+* Custom gecko code / dolphin / other settings
+* Custom overlays for score, in-game stats, etc.
 
 ### Notes
 
