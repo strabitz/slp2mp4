@@ -4,26 +4,26 @@ import pathlib
 import slp2mp4.util as util
 
 
-def _get_inputs_and_outputs(
+def get_inputs_and_outputs(
     root: pathlib.Path, in_dir: pathlib.Path, out_dir: pathlib.Path
 ):
     outputs = {}
     slps = list(sorted(in_dir.glob("*.slp"), key=util.natsort))
     root_name = pathlib.Path(root.resolve().name)
-    relative_path = root_name.joinpath(in_dir.relative_to(root))
+    relative_path = root_name.joinpath(in_dir.resolve().relative_to(root))
     name = f"""{out_dir.joinpath(("_").join(relative_path.parts))}.mp4"""
     if len(slps) > 0:
         outputs[name] = slps
     for child in in_dir.iterdir():
         if child.is_dir():
-            outputs = outputs | _get_inputs_and_outputs(root, child, out_dir)
+            outputs = outputs | get_inputs_and_outputs(root, child, out_dir)
     return outputs
 
 
 def run(conf, args):
     if not args.path.exists() and not args.path.is_dir():
         raise FileNotFoundError(args.path.name)
-    return _get_inputs_and_outputs(args.path, args.path, args.output_directory)
+    return get_inputs_and_outputs(args.path, args.path, args.output_directory)
 
 
 def register(subparser):

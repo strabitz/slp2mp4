@@ -6,7 +6,7 @@ TODO
 * Tests
 * Github actions?
 * Config / input validation
-* Mode for using files output by replay manager (zips)
+* Use context.json for replay manager
 * Config path validation (during dry run)
 * Volume
 * Custom gecko code / dolphin / other settings
