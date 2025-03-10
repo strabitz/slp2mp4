@@ -73,3 +73,15 @@ def make_gfx_file(userdir: pathlib.Path, user_settings):
     filename = userdir.joinpath("Config", "GFX.ini")
     with make_ini_file(filename, settings) as (name, handle):
         yield name
+
+@contextlib.contextmanager
+def make_gecko_file(userdir: pathlib.Path):
+    settings = {
+        "Gecko": {},
+        "Gecko_Enabled": {
+            "$Optional: Hide Waiting For Game": None
+        }
+    }
+    filename = userdir.joinpath("GameSettings", "GALE01.ini")
+    with make_ini_file(filename, settings) as (name, handle):
+        yield name
