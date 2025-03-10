@@ -16,7 +16,7 @@ class FfmpegRunner:
         subprocess.run(ffmpeg_args, check=True)
 
     def reencode_audio(self, audio_file_path: pathlib.Path):
-        reencoded_path = audio_file_path.parent / "fixed.wav"
+        reencoded_path = audio_file_path.parent / "fixed.opus"
         args = (
             ("-y",),
             (
@@ -25,22 +25,26 @@ class FfmpegRunner:
             ),
             (
                 "-ar",
-                "32000",
+                "48000",
             ),
             (
                 "-c:a",
-                "pcm_s16le",
+                "libopus",
             ),
             (
                 "-ac",
                 "2",
+            ),
+            (
+                "-b:a",
+                "128k"
             ),
             (reencoded_path,),
         )
         self._run(args)
         return reencoded_path
 
-    # Assumes output file can handle no reencoding
+    # Assumes output file can handle no reencoding for concat
     # Returns True if ffmpeg ran successfully, False otherwise
     def merge_audio_and_video(
         self,
@@ -57,6 +61,18 @@ class FfmpegRunner:
             (
                 "-i",
                 video_file,
+            ),
+            (
+                "-c:a",
+                "copy",
+            ),
+            (
+                "-c:v",
+                "copy",
+            ),
+            (
+                "-b:v",
+                "7500k",    # TODO follow setting
             ),
             (
                 "-avoid_negative_ts",
