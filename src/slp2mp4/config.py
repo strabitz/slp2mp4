@@ -33,7 +33,7 @@ CONSTRUCTORS = {
         "slippi_playback": _path,
         "ssbm_ini": _path,
     },
-    "video": {
+    "dolphin": {
         "resolution": _parse_resolution,
         "bitrate": str,
     },

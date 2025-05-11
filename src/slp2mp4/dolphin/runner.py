@@ -23,11 +23,11 @@ class DolphinRunner:
     def __init__(self, config):
         self.slippi_playback = config["paths"]["slippi_playback"]
         self.ssbm_ini = config["paths"]["ssbm_ini"]
-        self.video_backend = config["video"]["backend"]
+        self.video_backend = config["dolphin"]["backend"]
         self.user_gfx = {
             "Settings": {
-                "EFBScale": config["video"]["resolution"],
-                "BitrateKbps": config["video"]["bitrate"],
+                "EFBScale": config["dolphin"]["resolution"],
+                "BitrateKbps": config["dolphin"]["bitrate"],
             },
         }
 
