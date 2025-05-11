@@ -3,6 +3,7 @@
 import pathlib
 import tempfile
 import subprocess
+import shlex
 
 import slp2mp4.util as util
 
@@ -10,32 +11,21 @@ import slp2mp4.util as util
 class FfmpegRunner:
     def __init__(self, config):
         self.ffmpeg_path = config["paths"]["ffmpeg"]
+        self.audio_args = shlex.split(config["ffmpeg"]["audio_args"])
 
     def _run(self, args):
         ffmpeg_args = [self.ffmpeg_path] + util.flatten_arg_tuples(args)
         subprocess.run(ffmpeg_args, check=True)
 
     def reencode_audio(self, audio_file_path: pathlib.Path):
-        reencoded_path = audio_file_path.parent / "fixed.opus"
+        reencoded_path = audio_file_path.parent / "fixed.out"
         args = (
             ("-y",),
             (
                 "-i",
                 audio_file_path,
             ),
-            (
-                "-ar",
-                "48000",
-            ),
-            (
-                "-c:a",
-                "libopus",
-            ),
-            (
-                "-ac",
-                "2",
-            ),
-            ("-b:a", "128k"),
+            self.audio_args,
             (reencoded_path,),
         )
         self._run(args)
