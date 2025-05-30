@@ -23,7 +23,7 @@ def get_inputs_and_outputs(
 
 
 def run(conf, args):
-    if not args.path.exists() and not args.path.is_dir():
+    if not args.path.exists() or not args.path.is_dir():
         raise FileNotFoundError(args.path.name)
     return get_inputs_and_outputs(args.path, args.path, args.output_directory)
 
