@@ -41,17 +41,17 @@ def run(conf, args):
                     files.append(path)
     # Create a temporary directory manually without the delete parameter
     tmpdir = pathlib.Path(tempfile.mkdtemp())
-    
+
     # Register cleanup function
     atexit.register(shutil.rmtree, tmpdir)
-    
+
     try:
         tmpdir_main = tmpdir / parent_name
         tmpdir_main.mkdir()
-        
+
         for file in files:
             _recursively_unzip(file, tmpdir_main / file.stem)
-        
+
         return get_inputs_and_outputs(tmpdir_main, tmpdir_main, args.output_directory)
     except Exception:
         # Clean up on error
