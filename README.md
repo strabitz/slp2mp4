@@ -25,10 +25,7 @@ Convert Slippi replay files (`.slp`) to video files (`.mp4`) with ease.
 
 ### From a Build
 
-Currently, go to the "Actions" tab, select the latest workflow, and select the
-artifact for your platform.
-
-Eventually, we will make releases which will have artifacts attached.
+Select the latest release from the [releases][releases] page.
 
 ### From Source
 
@@ -162,4 +159,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [default-settings]: ./src/slp2mp4/defaults.toml
 [dolphin-video-backends-src]: https://github.com/dolphin-emu/dolphin/tree/master/Source/Core/VideoBackends
 [dolphin-video-backends]: https://wiki.dolphin-emu.org/index.php?title=Configuration_Guide#Video_Backend
+[releases]: ../../releases
 [toml]: https://toml.io/en/
