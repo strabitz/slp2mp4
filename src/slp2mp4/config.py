@@ -26,12 +26,8 @@ def _parse_resolution(r):
     return RESOLUTIONS[r]
 
 
-def _get_cpus():
-    return os.cpu_count()
-
-
 def _parse_parallel(p):
-    return max(_get_cpus() - 1, 1) if (p == 0) else p
+    return os.cpu_count() if (p == 0) else p
 
 
 CONSTRUCTORS = {
@@ -120,14 +116,11 @@ def validate_config(conf):
         )
 
     # Runtime
-    max_cpus = _get_cpus()
     try:
-        cpus = int(str(conf["runtime"]["parallel"]))
-        if not (0 <= cpus <= max_cpus):
-            raise ValueError
+        int(str(conf["runtime"]["parallel"]))
     except ValueError:
         raise RuntimeError(
-            f"Invalid runtime.parallel '{conf['runtime']['parallel']}'; must be an integer [0-{max_cpus}]"
+            f"Invalid runtime.parallel '{conf['runtime']['parallel']}'; must be an integer"
         )
     try:
         bool(conf["runtime"]["prepend_directory"])
