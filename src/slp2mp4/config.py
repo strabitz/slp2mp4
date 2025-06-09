@@ -43,7 +43,6 @@ CONSTRUCTORS = {
     "dolphin": {
         "resolution": _parse_resolution,
         "bitrate": str,
-        "volume": str,
     },
     "runtime": {
         "parallel": _parse_parallel,
@@ -109,13 +108,15 @@ def validate_config(conf):
         raise RuntimeError(
             f"Invalid dolphin.bitrate '{conf['dolphin']['bitrate']}'; must be an integer"
         )
+
+    # FFmpeg
     try:
-        volume = int(str(conf["dolphin"]["volume"]))
+        volume = float(str(conf["ffmpeg"]["volume"]))
         if not (0 <= volume <= 100):
             raise ValueError
     except ValueError:
         raise RuntimeError(
-            f"Invalid dolphin.volume '{conf['dolphin']['volume']}'; must be an integer [0-100]"
+            f"Invalid ffmpeg.volume '{conf['ffmpeg']['volume']}'; must be a float [0-100]"
         )
 
     # Runtime

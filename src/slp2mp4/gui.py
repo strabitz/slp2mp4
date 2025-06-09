@@ -137,31 +137,31 @@ class ConfigDialog(tk.Toplevel):
         )
         bitrate_spin.grid(row=2, column=1, padx=5, pady=5)
 
-        # Volume
-        ttk.Label(dolphin_frame, text="Volume (%)").grid(
-            row=3, column=0, sticky="w", padx=5, pady=5
-        )
-        self.volume_var = tk.IntVar()
-        volume_spin = ttk.Spinbox(
-            dolphin_frame, from_=0, to=100, textvariable=self.volume_var, increment=1
-        )
-        volume_spin.grid(row=3, column=1, padx=5, pady=5)
-
         # FFmpeg settings tab
         ffmpeg_frame = ttk.Frame(notebook)
         ffmpeg_frame.pack(side="top", pady=5)
         notebook.add(ffmpeg_frame, text="FFmpeg")
 
-        # FFmpeg audio args
-        ttk.Label(ffmpeg_frame, text="Audio args").grid(
-            row=0, column=0, sticky="w", padx=5, pady=5
+        # Volume
+        volume_frame = ttk.Frame(ffmpeg_frame)
+        volume_frame.pack(side="top", pady=5)
+        ttk.Label(volume_frame, text="Volume (%)").pack(side="left", padx=5)
+        self.volume_var = tk.IntVar()
+        volume_spin = ttk.Spinbox(
+            volume_frame, from_=0, to=100, textvariable=self.volume_var, increment=1
         )
+        volume_spin.pack(side="right", padx=5)
+
+        # FFmpeg audio args
+        ffmpeg_args_frame = ttk.Frame(ffmpeg_frame)
+        ffmpeg_args_frame.pack(side="top", pady=5)
+        ttk.Label(ffmpeg_args_frame, text="Audio args").pack(side="left", padx=5)
         self.ffmpeg_args_var = scrolledtext.ScrolledText(
-            ffmpeg_frame,
+            ffmpeg_args_frame,
             height=2,
             wrap=tk.WORD,
         )
-        self.ffmpeg_args_var.grid(row=1, column=0, padx=5, pady=5)
+        self.ffmpeg_args_var.pack(side="bottom", padx=5)
 
         # Runtime settings tab
         runtime_frame = ttk.Frame(notebook)
@@ -234,7 +234,7 @@ class ConfigDialog(tk.Toplevel):
         self.backend_var.set(self.config["dolphin"]["backend"])
         self.resolution_var.set(self.config["dolphin"]["resolution"])
         self.bitrate_var.set(int(self.config["dolphin"]["bitrate"]))
-        self.volume_var.set(int(self.config["dolphin"]["volume"]))
+        self.volume_var.set(int(self.config["ffmpeg"]["volume"]))
         self.ffmpeg_args_var.delete("1.0", tk.END)
         self.ffmpeg_args_var.insert(tk.END, str(self.config["ffmpeg"]["audio_args"]))
         self.parallel_var.set(int(self.config["runtime"]["parallel"]))
@@ -254,9 +254,9 @@ class ConfigDialog(tk.Toplevel):
                 "backend": self.backend_var.get(),
                 "resolution": self.resolution_var.get(),
                 "bitrate": self.bitrate_var.get(),
-                "volume": self.volume_var.get(),
             },
             "ffmpeg": {
+                "volume": self.volume_var.get(),
                 "audio_args": audio_args,
             },
             "runtime": {

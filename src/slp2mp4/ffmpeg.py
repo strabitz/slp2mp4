@@ -10,6 +10,7 @@ import slp2mp4.util as util
 
 class FfmpegRunner:
     def __init__(self, config):
+        self.conf = config
         self.ffmpeg_path = config["paths"]["ffmpeg"]
         self.audio_args = shlex.split(config["ffmpeg"]["audio_args"])
 
@@ -26,6 +27,10 @@ class FfmpegRunner:
                 audio_file_path,
             ),
             self.audio_args,
+            (
+                "-filter:a",
+                f"volume='{self.conf['ffmpeg']['volume']/100}'",
+            ),
             (reencoded_path,),
         )
         self._run(args)
