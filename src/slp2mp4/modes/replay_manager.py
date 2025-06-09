@@ -21,8 +21,10 @@ def _recursive_extract(tmpdir, path):
     if zipfile.is_zipfile(path):
         with zipfile.ZipFile(path, "r") as zfile:
             zfile.extractall(path=newdir)
-    for zfile in newdir.glob("*.zip"):
-        _recursive_extract(newdir, zfile)
+        _recursive_extract(newdir, newdir)
+    else:
+        for zfile in path.glob("*.zip"):
+            _recursive_extract(newdir, zfile)
 
 
 def _extract(file):
