@@ -1,7 +1,8 @@
 # Misc. utilities
 
-import subprocess
+import pathlib
 import re
+import subprocess
 
 
 def update_dict(d1: dict, d2: dict):
@@ -23,3 +24,7 @@ def natsort(s):
     a = re.split(r"(\d+)", str(s).casefold())
     a[1::2] = map(int, a[1::2])
     return a
+
+
+def get_parent_as_path(p):
+    return pathlib.Path(p.absolute().parent.parts[-1])

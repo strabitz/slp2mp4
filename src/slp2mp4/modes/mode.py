@@ -14,22 +14,22 @@ class Mode:
         self.output_directory = output_directory
         self.conf = None
 
-    def iterator(self, root, path):
+    def iterator(self, location, path):
         raise NotImplementedError("Child must implement `iterator`")
 
-    def get_name(self, path):
+    def get_name(self, prefix, path):
+        name = path.stem
         if self.conf["runtime"]["prepend_directory"]:
-            parent_part = ("_").join(path.parent.parts)
-            parent_prefix = (
-                f"{parent_part}_" if path.parent != pathlib.Path(".") else ""
-            )
+            prefix = ("_").join(prefix.parts)
         else:
-            parent_prefix = ""
-        name = f"{parent_prefix}{path.stem}.mp4"
+            prefix = ("_").join(prefix.parts[1:])
+        if prefix:
+            name = f"{prefix}_{name}"
         if self.conf["runtime"]["youtubify_names"]:
             name = name.replace("-", "—")
             name = name.replace("(", "⟮")
             name = name.replace(")", "⟯")
+        name += ".mp4"
         sanitized = pathvalidate.sanitize_filename(self.output_directory / name)
         # Name too long; suffix got dropped
         if not sanitized.suffix:
@@ -39,9 +39,9 @@ class Mode:
 
     def get_outputs(self) -> list[Output]:
         return [
-            Output(slps, self.get_name(mp4))
+            Output(slps, self.get_name(prefix, mp4))
             for path in self.paths
-            for slps, mp4 in self.iterator(pathlib.Path("."), path)
+            for slps, prefix, mp4 in self.iterator(pathlib.Path("."), path)
         ]
 
     def run(self, dry_run=False):
