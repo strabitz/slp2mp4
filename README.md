@@ -33,14 +33,13 @@ Eventually, we will make releases which will have artifacts attached.
 ### From Source
 
 ```bash
-pip install "slp2mp4[gui] @ git+https://github.com/davisdude/slp2mp4.git@cleanup"
+pip install "slp2mp4[gui] @ git+https://github.com/davisdude/slp2mp4.git"
 ```
 
 or
 
 ```bash
 git clone https://github.com/davisdude/slp2mp4.git
-git checkout cleanup
 pip install .[gui]
 ```
 
