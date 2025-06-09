@@ -1,202 +1,166 @@
-# slp to mp4
+# `slp2mp4`
 
-`slp2mp4` converts [Project Slippi][slippi] replay files for [Super Smash Bros.
-Melee][ssbm] to mp4 videos.
+Convert Slippi replay files (`.slp`) to video files (`.mp4`) with ease.
 
-The goal is to make it easy to batch-convert replays to HD video without screen
-recording software.
+## Features
 
-## Dependencies
+- Multiple conversion modes:
+    - Single file conversion
+    - Directory batch conversion (recursive)
+    - Replay Manager zip file support
+- Parallel processing for faster batch conversions
+- GUI for easy configuration and operation
+- Customizable output resolution and bitrate
+- Cross-platform support for Windows, Linux
+    - Dolphin on Mac does not support framedumping
 
-- [Python][python] >= 3.7
+## Requirements
 
-- [ffmpeg][ffmpeg] for combining the raw the video and audio streams
+- Python 3.11 or higher
+- [FFmpeg](https://ffmpeg.org/) installed and accessible
+- [Slippi Dolphin](https://slippi.gg/downloads) installed
+- Super Smash Bros. Melee ISO file
 
-- A 'playback build' of Dolphin. This is a special Dolphin used for playing
-  back Slippi replays.
+## Installation
 
-	- If your replays are from the latest rollback Slippi (e.g. 2.2.3) you
-	  can get the playback dolphin by installing the [Slippi Desktop
-	  App][slippi-download]
+### From a Build
 
-	- For older replays, you can use [Faster Melee][faster-melee]
+Currently, go to the "Actions" tab, select the latest workflow, and select the
+artifact for your platform.
 
-- A Super Smash Bros. Melee v1.02 NTSC ISO.
+Eventually, we will make releases which will have artifacts attached.
 
-## Setup
+### From Source
 
-First, install [python]. Make sure you have at least Python 3.7 installed.
-While installing, be sure to check that `pip` should be installed as well, and
-that Python should be added to your environment variables.
-
-Now, in a command window, run the following command:
-
+```bash
+pip install "slp2mp4[gui] @ git+https://github.com/davisdude/slp2mp4.git@cleanup"
 ```
-pip install git+https://github.com/davisdude/slp2mp4
+
+or
+
+```bash
+git clone https://github.com/davisdude/slp2mp4.git
+git checkout cleanup
+pip install .[gui]
 ```
 
-The same command can be used to update to the latest version at any time. Note
-that this will reset all settings.
+Both methods require having `git` and `pip` installed
 
 ## Usage
 
-```
-usage: slp2mp4 run [-h] [-o dir] path [path ...]
+### Command Line Interface
 
-positional arguments:
-  path                  Slippi files/directories containing slippi files to convert
+```text
+usage: slp2mp4 [-h] [-o OUTPUT_DIRECTORY] [-n] [-v] {single,directory,replay_manager} ...
 
 options:
   -h, --help            show this help message and exit
-  -o dir, --output_directory dir
-                        Directory to put created mp4s
+  -o, --output-directory OUTPUT_DIRECTORY
+                        set path to output videos
+  -n, --dry-run         show inputs and outputs and exit
+  -v, --version         show program's version number and exit
+
+mode:
+  {single,directory,replay_manager}
+    single              convert single replay files to videos
+    directory           recursively convert all replay files in a directory to videos
+    replay_manager      recursively convert all replay files in a zip to videos
 ```
 
-This launches Dolphin, which plays the replay and dumps frames and audio. Then
-ffmpeg is invoked to combine audio and video.
+### Graphical User Interface
 
-```
-Event/
-      a.slp
-      b.slp
-      c.slp
-      Game_1/
-             d.slp
-             e.slp
-             f.slp
-      Game_2/
-             g.slp
-             h.slp
-             i.slp
-```
+The GUI has all the features that the CLI has. Change your settings in the
+menu, select your conversion type, set your directories, then click start.
 
-gives
-
-```
-./OUTDIR/Event.mp4
-./OUTDIR/Event-Game_1.mp4
-./OUTDIR/Event-Game_2.mp4
-```
-
-Where `./` is the directory in which the command was run and `OUTDIR` is the
-(optional) prefix given if you want all videos to show up in a specific spot.
-Additionally, `Event.mp4` is made up of `a.slp`, `b.slp`, and `c.slp`,
-`Event-Game_1.mp4` is made up of `d.slp`, `e.slp`, and `f.slp`, and so on.
-
----
+To launch the GUI, run `slp2mp4_gui`.
 
 ## Configuration
 
-To enter configuration mode, run
+`slp2mp4` uses hierarchical settings that come from [TOML][toml] files.
+Settings not found in the user configuration (`~/.slp2mp4.toml`) fall back to
+the [default settings](#default-settings).
 
+### Default Settings
+
+The default settings can be found [here][default-settings].
+
+### Configuration Options
+
+#### Paths
+
+- `ffmpeg`: Path to FFmpeg executable
+- `slippi_playback`: Path to playback Slippi Dolphin executable
+- `ssbm_iso`: Path to your Melee ISO file
+
+#### Dolphin Settings
+
+- `backend`: Video backend (`OGL`, `D3D`, `D3D12`, `Vulkan`, `Software`)
+- `resolution`: Output resolution (`480p`, `720p`, `1080p`, `1440p`, `2160p`)
+- `bitrate`: Video bitrate in kbps
+- `volume`: Volume of dolphin (0-100)
+
+#### FFmpeg Settings
+
+- `audio_args`: FFmpeg audio processing settings
+
+#### Runtime Settings
+
+- `parallel`: Number of parallel processes (0 = auto-detect CPU cores)
+- `prepend_directory`: Prepend the parent directory info
+- `youtubify_names`: Replace some characters in file names for YouTube uploads
+
+### Example Configuration
+
+```toml
+[paths]
+ffmpeg = "ffmpeg"
+slippi_playback = "~/AppData/Roaming/Slippi Launcher/playback/Slippi Dolphin.exe"
+ssbm_iso = "~/Games/Melee.iso"
+
+[dolphin]
+backend = "OGL"
+resolution = "1080p"
+bitrate = 16000
+volume = 25
+
+[runtime]
+parallel = 0
 ```
-slp2mp4 config
+
+or on Windows:
+
+```toml
+[paths]
+ffmpeg = "C:/Users/user/Downloads/ffmpeg-2025-01-27-git-959b799c8d-essentials_build/bin/ffmpeg.exe"
+slippi_playback = "C:/Users/user/AppData/Roaming/Slippi Launcher/playback/Slippi Dolphin.exe"
+ssbm_iso = "C:/Users/user/Documents/iso/ssbm.iso"
+
+[dolphin]
+backend = "D3D"
+resolution = "1080p"
+volume = 25
+bitrate = 16000
+
+[runtime]
+parallel = 0
 ```
 
-**NOTE**: Unfortunately, you will need to redo the configuration each time you
-update.
+## Notes
 
-From here, you will see several fields (described below), which you can
-configure by entering text and hitting `enter`.
+* If you get weird looking video (where half the width is cropped), try
+  changing the video backend. [Here][dolphin-video-backends] is a list of the
+  different video backends; you can find the names used
+  [here][dolphin-video-backends-src] for what name to use in the config.
 
-There are several configuration options that you can control:
+* Does not play nicely with WSL, since dolphin expects all paths to be relative
+  to Windows.
 
-- `'melee_iso'` is the path to your Super Smash Bros. Melee 1.02 ISO.
+## License
 
-- `'dolphin_dir'` and `'ffmpeg'` in linux need to be set to the playback path
-  in the installed version of dolphin, and the default installed path of
-  ffmpeg. In windows, these dependencies are downloaded and installed in the
-  local directory so there is no need to change the paths; 'ffmpeg' can also be
-  the command name if it's in your PATH
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-- `'resolution'` can be set to the following. The output resolution is the
-  minimum resolution dolphin can run above the resolution in this
-  configuration.
 
-	- 480p
-	- 720p
-	- 1080p
-	- 1440p
-	- 2160p
-
-- `'video_backend'` is the graphics backend you want to use. Currently, this
-  can either be `"OGL"` for OpenGL, or `"D3D"` for Direct3D (Windows only).
-  OpenGL is the default, as Direct3D can give strange cropping results when
-  dumping in non-widescreen mode. Plus, it tends to be faster and gives fewer
-  visual artifacts.
-
-- `'widescreen'` can be `true` or `false`. Enabling will set the resolution to
-  16:9
-
-- `'bitrateKbps'` must be a number. It selects the bitrate in Kilobits per
-  second that dolphin records at.
-
-- `'parallel_games'` must be a number greater than 0, or `"recommended"`. This
-  is the maximum number of games that will run at the same time.
-  `"recommended"` will select the number of physical cores in the CPU.
-
-- `'remove_short'` can be `true` or `false`. Enabling will not record games
-  less than 30 seconds. Most games less than 30 seconds are handwarmers, so it
-  can save time not to record them.
-
-- `'combine'`: can be `true` or `false`, and matters only when recording a
-  folder of `.slp` files. If `false`, the `.mp4` files will be left in their
-  subfolders in the output folder. If `true`, each subfolder of `.mp4` files
-  will be combined into `.mp4` files in the output folder.
-
-- `remove_slps`: can be `true` or `false`; if `true`, remove slp files after
-  they've been converted into mp4s.
-
-## Performance
-
-Resolution, widescreen, bitrate, and the number of parallel games will all
-affect performance. Dolphin will not record well (skips additional frames) when
-running less than or greater than 60 FPS. It becomes noticeable below 58 FPS.
-YouTube requires a resolution of at least 720p to upload a 60 FPS video, so it
-should be a goal to run at that resolution or higher. A higher bitrate will
-come with better video quality but larger file size and worse performance
-because dolphin has more to encode. The number of parallel games will have the
-largest effect on performance. The 'recommended' value is the number of
-physical cpu cores, but greater or fewer parallel games may be optimal.
-
-## Future work
-
-- Make installation/setup easier
-
-	- There was previously an auto-installer for ffmpeg + playback dolphin
-	  on windows, but it relied on a direct download of the playback
-	  dolphin, which isn't available for the latest slippi
-
-	- Would be nice to remove dependencies on py-slippi and psutil somehow.
-
-	- Package everything in a release
-
-- Multiprocessing
-
-	- Allow combining after all required files are done recording while
-	  multiprocessing
-
-	- Better progress reporting
-
-	- Warning on completion if average runtime frame rate is below 58 fps
-
-- Run Dolphin at higher emulation speed if possible
-
-- Improve config script experience
-
-	- Open file explorer / at least enable tab completion
-
-	- Change default playback dir for Linux to `~/.config/Slippi Launcher/playback`
-
-	- Don't overwrite config on update
-
-- GUI
-
-	- At least simple batch script people can drop files/folders onto
-
-[faster-melee]: https://www.smashladder.com/download/dolphin/18/Project+Slippi+%28r18%29
-[ffmpeg]: https://ffmpeg.org/download.html
-[python]: https://www.python.org/downloads/
-[slippi-download]: https://slippi.gg/downloads
-[slippi]: https://github.com/project-slippi/project-slippi
-[ssbm]: https://en.wikipedia.org/wiki/Super_Smash_Bros._Melee
+[default-settings]: ./src/slp2mp4/defaults.toml
+[dolphin-video-backends-src]: https://github.com/dolphin-emu/dolphin/tree/master/Source/Core/VideoBackends
+[dolphin-video-backends]: https://wiki.dolphin-emu.org/index.php?title=Configuration_Guide#Video_Backend
+[toml]: https://toml.io/en/

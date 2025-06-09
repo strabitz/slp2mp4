@@ -1,0 +1,43 @@
+name: Package Application with PyInstaller
+on:
+  push:
+    branches:
+      - cleanup
+      - master
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [windows-latest, ubuntu-latest]
+        script: [src/slp2mp4/gui.py]
+        include:
+          - script: src/slp2mp4/gui.py
+            name: slp2mp4_gui
+            pip_install_suffix: "[gui]"
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          pip install ".${{ matrix.pip_install_suffix }}"
+
+      - name: Run pyinstaller
+        run: |
+          pyinstaller --name ${{ matrix.name }} --add-data "src/slp2mp4/defaults.toml:slp2mp4/" --onefile ${{ matrix.script }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ runner.os }}
+          path: |
+            dist/*
