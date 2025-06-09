@@ -30,7 +30,7 @@ class Mode:
             name = name.replace("(", "⟮")
             name = name.replace(")", "⟯")
         name += ".mp4"
-        sanitized = pathvalidate.sanitize_filename(self.output_directory / name)
+        sanitized = self.output_directory / pathvalidate.sanitize_filename(name)
         # Name too long; suffix got dropped
         if not sanitized.suffix:
             # Drop beginning of name since it's more likely to be duplicated
