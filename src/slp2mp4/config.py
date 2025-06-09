@@ -27,7 +27,7 @@ def _parse_resolution(r):
 
 
 def _get_cpus():
-    return len(os.sched_getaffinity(0))
+    return os.cpu_count()
 
 
 def _parse_parallel(p):
