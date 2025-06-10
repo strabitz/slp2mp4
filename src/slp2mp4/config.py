@@ -15,7 +15,15 @@ USER_CONFIG_FILE = pathlib.Path("~/.slp2mp4.toml").expanduser()
 
 RESOLUTIONS = {"480p": "2", "720p": "3", "1080p": "5", "1440p": "6", "2160p": "8"}
 
-DOLPHIN_BACKENDS = ["OGL", "D3D", "D3D12", "Vulkan", "Software"]
+# From https://github.com/project-slippi/Ishiiruka/tree/slippi/Source/Core/VideoBackends
+DOLPHIN_BACKENDS = [
+    "D3D12",
+    "DX11",
+    "DX9",
+    "OGL",
+    "Software Renderer",
+    "Vulkan",
+]
 
 
 def _parse_to_type(string, totype):
