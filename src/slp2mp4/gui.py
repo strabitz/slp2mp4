@@ -118,7 +118,7 @@ class ConfigDialog(tk.Toplevel):
         resolution_combo = ttk.Combobox(
             dolphin_frame,
             textvariable=self.resolution_var,
-            values=config.RESOLUTIONS.keys(),
+            values=list(config.RESOLUTIONS.keys()),
             state="readonly",
         )
         resolution_combo.grid(row=1, column=1, padx=5, pady=5)
