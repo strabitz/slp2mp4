@@ -138,7 +138,7 @@ backend = "D3D"
 resolution = "1080p"
 bitrate = 16000
 
-[volume]
+[ffmpeg]
 volume = 25
 
 [runtime]

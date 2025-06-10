@@ -30,7 +30,7 @@ def _parse_to_type(string, totype):
     try:
         return True, totype(string)
     except ValueError:
-        return False, totype
+        return False, string
 
 
 def _parse_path(path_str):
