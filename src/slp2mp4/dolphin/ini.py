@@ -1,7 +1,6 @@
 # Logic for dolphin INIs
 # https://github.com/dolphin-emu/fifoci/
 
-# TODO: Disable "waiting for game" screen
 # TODO: More config options (e.g. widescreen, gecko codes, hide tags)
 
 import configparser

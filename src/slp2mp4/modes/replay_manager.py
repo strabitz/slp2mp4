@@ -30,7 +30,11 @@ class ReplayManager(Mode):
 
     def _extract_helper(self, paths):
         for path in paths:
-            root = pathlib.Path(path.absolute().name) if path.is_dir() else util.get_parent_as_path(path) / path.stem
+            root = (
+                pathlib.Path(path.absolute().name)
+                if path.is_dir()
+                else util.get_parent_as_path(path) / path.stem
+            )
             self._recursive_extract(root, path)
         return self.lookups.keys()
 
@@ -43,7 +47,11 @@ class ReplayManager(Mode):
         else:
             slps = list(sorted(path.glob("*.slp"), key=util.natsort))
             if len(slps) > 0 and fromzip:
-                self.lookups[location] = (slps, location.parent, pathlib.Path(location.name))
+                self.lookups[location] = (
+                    slps,
+                    location.parent,
+                    pathlib.Path(location.name),
+                )
             for child in path.iterdir():
                 if child.is_dir() or zipfile.is_zipfile(child):
                     self._recursive_extract(location / child.stem, child, fromzip)

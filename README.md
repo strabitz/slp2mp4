@@ -5,10 +5,10 @@ Convert Slippi replay files (`.slp`) to video files (`.mp4`) with ease.
 ## Features
 
 - Multiple conversion modes:
-    - Single file conversion
-    - Directory batch conversion (recursive)
-    - Replay Manager zip file support
-- Parallel processing for faster batch conversions
+    - Single file(s)
+    - Directory (recursive)
+    - [Replay Manager][replay-manager] zip(s)
+- Parallel processing for faster conversions
 - GUI for easy configuration and operation
 - Customizable output resolution and bitrate
 - Cross-platform support for Windows, Linux
@@ -93,11 +93,11 @@ The default settings can be found [here][default-settings].
 - `backend`: Video backend (`OGL`, `D3D`, `D3D12`, `Vulkan`, `Software`)
 - `resolution`: Output resolution (`480p`, `720p`, `1080p`, `1440p`, `2160p`)
 - `bitrate`: Video bitrate in kbps
-- `volume`: Volume of dolphin (0-100)
 
 #### FFmpeg Settings
 
 - `audio_args`: FFmpeg audio processing settings
+- `volume`: Volume of dolphin (0-100)
 
 #### Runtime Settings
 
@@ -117,6 +117,8 @@ ssbm_iso = "~/Games/Melee.iso"
 backend = "OGL"
 resolution = "1080p"
 bitrate = 16000
+
+[ffmpeg]
 volume = 25
 
 [runtime]
@@ -134,8 +136,10 @@ ssbm_iso = "C:/Users/user/Documents/iso/ssbm.iso"
 [dolphin]
 backend = "D3D"
 resolution = "1080p"
-volume = 25
 bitrate = 16000
+
+[volume]
+volume = 25
 
 [runtime]
 parallel = 0
@@ -160,4 +164,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [dolphin-video-backends-src]: https://github.com/dolphin-emu/dolphin/tree/master/Source/Core/VideoBackends
 [dolphin-video-backends]: https://wiki.dolphin-emu.org/index.php?title=Configuration_Guide#Video_Backend
 [releases]: ../../releases
+[replay-manager]: https://github.com/jmlee337/replay-manager-for-slippi
 [toml]: https://toml.io/en/

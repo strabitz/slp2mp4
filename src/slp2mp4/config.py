@@ -108,7 +108,9 @@ def _apply_constructors(conf: dict, constructors: dict, path=pathlib.Path(".")):
         new_path = path / k
         if isinstance(constructor, typing.Callable):
             success, value = constructor(conf[k])
-            assert success, f"Config: Invalid value for {('.').join(new_path.parts)}: '{conf[k]}'"
+            assert (
+                success
+            ), f"Config: Invalid value for {('.').join(new_path.parts)}: '{conf[k]}'"
             conf[k] = value
         elif isinstance(constructor, dict):
             _apply_constructors(conf[k], constructor, new_path)

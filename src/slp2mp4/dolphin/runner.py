@@ -11,14 +11,6 @@ import slp2mp4.dolphin.ini as ini
 import slp2mp4.util as util
 
 
-def _get_number_of_frames_rendered(frames_file: pathlib.Path) -> int:
-    try:
-        with open(frames_file, "r") as f:
-            return len(list(f))
-    except FileNotFoundError:
-        return 0
-
-
 class DolphinRunner:
     def __init__(self, config):
         self.slippi_playback = config["paths"]["slippi_playback"]

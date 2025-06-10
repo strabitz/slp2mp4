@@ -11,7 +11,11 @@ class Directory(Mode):
             raise FileNotFoundError(path.name)
         slps = list(sorted(path.glob("*.slp"), key=util.natsort))
         if len(slps) > 0:
-            loc = location if (location != pathlib.Path(".")) else util.get_parent_as_path(path)
+            loc = (
+                location
+                if (location != pathlib.Path("."))
+                else util.get_parent_as_path(path)
+            )
             yield slps, loc, pathlib.Path(path.name)
         for child in path.iterdir():
             if child.is_dir():
