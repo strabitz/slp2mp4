@@ -1,9 +1,5 @@
 name: Package Application with PyInstaller
-on:
-  push:
-    branches:
-      - cleanup
-      - master
+on: workflow_dispatch
 jobs:
   build:
     strategy:
