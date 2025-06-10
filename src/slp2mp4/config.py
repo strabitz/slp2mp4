@@ -18,40 +18,92 @@ RESOLUTIONS = {"480p": "2", "720p": "3", "1080p": "5", "1440p": "6", "2160p": "8
 DOLPHIN_BACKENDS = ["OGL", "D3D", "D3D12", "Vulkan", "Software"]
 
 
-def _path(p):
-    return pathlib.Path(p).expanduser()
+def _parse_to_type(string, totype):
+    try:
+        return True, totype(string)
+    except ValueError:
+        return False, totype
 
 
-def _parse_resolution(r):
-    return RESOLUTIONS[r]
+def _parse_path(path_str):
+    path = pathlib.Path(path_str).expanduser()
+    return (path.exists(), path)
 
 
-def _parse_parallel(p):
-    return os.cpu_count() if (p == 0) else p
+def _parse_bin_path(path_str):
+    status, path = _parse_path(path_str)
+    if path.is_absolute():
+        return (status, path)
+    path = shutil.which(str(path))
+    return (bool(path), path)
 
 
-CONSTRUCTORS = {
+def _parse_from_dict(key, dictionary):
+    return (key in dictionary, dictionary.get(key))
+
+
+def _parse_from_list(key, input_list):
+    return (key in input_list, key)
+
+
+def _parse_int(int_str):
+    # Convert to string first to catch int -> floats
+    return _parse_to_type(str(int_str), int)
+
+
+def _parse_bool(bool_str):
+    return (isinstance(bool_str, bool), bool_str)
+
+
+def _parse_str(str_str):
+    return _parse_to_type(str_str, str)
+
+
+def _parse_backend(backend):
+    return _parse_from_list(backend, DOLPHIN_BACKENDS)
+
+
+def _parse_resolution(resolution):
+    return _parse_from_dict(resolution, RESOLUTIONS)
+
+
+def _parse_parallel(parallel):
+    status, count = _parse_int(parallel)
+    return (status, os.cpu_count() if parallel == 0 else parallel)
+
+
+_TRANSFORMERS = {
     "paths": {
-        "ffmpeg": _path,
-        "slippi_playback": _path,
-        "ssbm_iso": _path,
+        "ffmpeg": _parse_bin_path,
+        "slippi_playback": _parse_path,
+        "ssbm_iso": _parse_path,
     },
     "dolphin": {
+        "backend": _parse_backend,
         "resolution": _parse_resolution,
-        "bitrate": str,
+        "bitrate": _parse_int,
+    },
+    "ffmpeg": {
+        "audio_args": _parse_str,
+        "volume": _parse_int,
     },
     "runtime": {
         "parallel": _parse_parallel,
+        "prepend_directory": _parse_bool,
+        "youtubify_names": _parse_bool,
     },
 }
 
 
-def _apply_constructors(conf: dict, constructors: dict):
+def _apply_constructors(conf: dict, constructors: dict, path=pathlib.Path(".")):
     for k, constructor in constructors.items():
+        new_path = path / k
         if isinstance(constructor, typing.Callable):
-            conf[k] = constructor(conf[k])
+            success, value = constructor(conf[k])
+            assert success, f"Config: Invalid value for {('.').join(new_path.parts)}: '{conf[k]}'"
+            conf[k] = value
         elif isinstance(constructor, dict):
-            _apply_constructors(conf[k], constructor)
+            _apply_constructors(conf[k], constructor, new_path)
 
 
 def _load_configs(config_files: [pathlib.Path]) -> dict:
@@ -74,63 +126,5 @@ def get_config():
     return _load_configs([DEFAULT_CONFIG_FILE, USER_CONFIG_FILE])
 
 
-def translate_config(conf):
-    _apply_constructors(conf, CONSTRUCTORS)
-
-
-def validate_config(conf):
-    # Paths
-    if not shutil.which(conf["paths"]["ffmpeg"]):
-        raise RuntimeError(f"Could not find ffmpeg; path={conf['paths']['ffmpeg']}")
-    if not pathlib.Path(conf["paths"]["slippi_playback"]).exists():
-        raise RuntimeError(
-            f"Could not find slippi playback; path={conf['paths']['slippi_playback']}"
-        )
-    if not pathlib.Path(conf["paths"]["ssbm_iso"]).exists():
-        raise RuntimeError(f"Could not find ssbm iso; path={conf['paths']['ssbm_iso']}")
-
-    # Dolphin
-    if conf["dolphin"]["backend"] not in DOLPHIN_BACKENDS:
-        raise RuntimeError(
-            f"Invalid dolphin.backend '{conf['dolphin']['backend']}'; must be one of {DOLPHIN_BACKENDS}"
-        )
-    if conf["dolphin"]["resolution"] not in RESOLUTIONS.keys():
-        raise RuntimeError(
-            f"Invalid dolphin.resolution '{conf['dolphin']['resolution']}'; must be one of {list(RESOLUTIONS.keys())}"
-        )
-    try:
-        int(str(conf["dolphin"]["bitrate"]))
-    except ValueError:
-        raise RuntimeError(
-            f"Invalid dolphin.bitrate '{conf['dolphin']['bitrate']}'; must be an integer"
-        )
-
-    # FFmpeg
-    try:
-        volume = float(str(conf["ffmpeg"]["volume"]))
-        if not (0 <= volume <= 100):
-            raise ValueError
-    except ValueError:
-        raise RuntimeError(
-            f"Invalid ffmpeg.volume '{conf['ffmpeg']['volume']}'; must be a float [0-100]"
-        )
-
-    # Runtime
-    try:
-        int(str(conf["runtime"]["parallel"]))
-    except ValueError:
-        raise RuntimeError(
-            f"Invalid runtime.parallel '{conf['runtime']['parallel']}'; must be an integer"
-        )
-    try:
-        bool(conf["runtime"]["prepend_directory"])
-    except ValueError:
-        raise RuntimeError(
-            f"Invalid runtime.prepend_directory '{conf['runtime']['prepend_directory']}'; must be true/false"
-        )
-    try:
-        bool(conf["runtime"]["youtubify_names"])
-    except ValueError:
-        raise RuntimeError(
-            f"Invalid runtime.youtubify_names '{conf['runtime']['youtubify_names']}'; must be true/false"
-        )
+def translate_and_validate_config(conf):
+    _apply_constructors(conf, _TRANSFORMERS)

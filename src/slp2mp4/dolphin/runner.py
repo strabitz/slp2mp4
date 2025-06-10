@@ -27,7 +27,7 @@ class DolphinRunner:
         self.user_gfx = {
             "Settings": {
                 "EFBScale": config["dolphin"]["resolution"],
-                "BitrateKbps": config["dolphin"]["bitrate"],
+                "BitrateKbps": str(config["dolphin"]["bitrate"]),
             },
         }
 

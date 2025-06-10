@@ -46,8 +46,7 @@ class Mode:
 
     def run(self, dry_run=False):
         self.conf = config.get_config()
-        config.validate_config(self.conf)
-        config.translate_config(self.conf)
+        config.translate_and_validate_config(self.conf)
         products = self.get_outputs()
         if dry_run:
             out = ""
