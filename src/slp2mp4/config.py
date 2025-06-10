@@ -123,6 +123,8 @@ def _load_configs(config_files: [pathlib.Path]) -> dict:
                 util.update_dict(conf, data)
         except FileNotFoundError:
             print(f"Could not find config file {file} - skipping")
+        except tomllib.TOMLDecodeError:
+            print(f"Invalid toml in file {file} - skipping")
     return conf
 
 
