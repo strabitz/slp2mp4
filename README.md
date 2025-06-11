@@ -130,9 +130,9 @@ or on Windows:
 
 ```toml
 [paths]
-ffmpeg = "C:/Users/user/Downloads/ffmpeg-2025-01-27-git-959b799c8d-essentials_build/bin/ffmpeg.exe"
-slippi_playback = "C:/Users/user/AppData/Roaming/Slippi Launcher/playback/Slippi Dolphin.exe"
-ssbm_iso = "C:/Users/user/Documents/iso/ssbm.iso"
+ffmpeg = "~/Downloads/ffmpeg-2025-01-27-git-959b799c8d-essentials_build/bin/ffmpeg.exe"
+slippi_playback = "~/AppData/Roaming/Slippi Launcher/playback/Slippi Dolphin.exe"
+ssbm_iso = "~/Documents/iso/ssbm.iso"
 
 [dolphin]
 backend = "D3D12"
