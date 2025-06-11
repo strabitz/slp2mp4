@@ -13,7 +13,15 @@ import slp2mp4.util as util
 DEFAULT_CONFIG_FILE = importlib.resources.files(slp2mp4).joinpath("defaults.toml")
 USER_CONFIG_FILE = pathlib.Path("~/.slp2mp4.toml").expanduser()
 
-RESOLUTIONS = {"480p": "2", "720p": "3", "1080p": "5", "1440p": "6", "2160p": "8"}
+# https://github.com/project-slippi/Ishiiruka/blob/3e5b185ae080e8dca5e939369572d94d20049fea/Source/Core/VideoCommon/VideoConfig.h#L40
+# https://github.com/project-slippi/Ishiiruka/blob/3e5b185ae080e8dca5e939369572d94d20049fea/Source/Core/DolphinWX/VideoConfigDiag.cpp#L450
+RESOLUTIONS = {
+    "480p": "2",
+    "720p": "3",
+    "1080p": "5",
+    "1440p": "6",
+    "2160p": "8",
+}
 
 # From https://github.com/project-slippi/Ishiiruka/tree/slippi/Source/Core/VideoBackends
 DOLPHIN_BACKENDS = [
