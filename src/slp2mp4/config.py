@@ -40,7 +40,7 @@ def _parse_path(path_str):
 
 def _parse_bin_path(path_str):
     status, path = _parse_path(path_str)
-    if path.is_absolute():
+    if status and path.is_absolute():
         return (status, path)
     path = shutil.which(str(path))
     return (bool(path), path)
@@ -77,7 +77,7 @@ def _parse_resolution(resolution):
 
 def _parse_parallel(parallel):
     status, count = _parse_int(parallel)
-    return (status, os.cpu_count() if parallel == 0 else parallel)
+    return (status, os.cpu_count() if count == 0 else count)
 
 
 _TRANSFORMERS = {
