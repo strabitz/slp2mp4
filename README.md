@@ -90,7 +90,8 @@ The default settings can be found [here][default-settings].
 
 #### Dolphin Settings
 
-- `backend`: Video backend (`OGL`, `D3D`, `D3D12`, `Vulkan`, `Software`)
+- `backend`: Video backend (`D3D12`, `DX11`, `DX9`, `OGL`, `Software Renderer`,
+  `Vulkan`)
 - `resolution`: Output resolution (`480p`, `720p`, `1080p`, `1440p`, `2160p`)
 - `bitrate`: Video bitrate in kbps
 
@@ -134,7 +135,7 @@ slippi_playback = "C:/Users/user/AppData/Roaming/Slippi Launcher/playback/Slippi
 ssbm_iso = "C:/Users/user/Documents/iso/ssbm.iso"
 
 [dolphin]
-backend = "D3D"
+backend = "D3D12"
 resolution = "1080p"
 bitrate = 16000
 
@@ -148,9 +149,8 @@ parallel = 0
 ## Notes
 
 * If you get weird looking video (where half the width is cropped), try
-  changing the video backend. [Here][dolphin-video-backends] is a list of the
-  different video backends; you can find the names used
-  [here][dolphin-video-backends-src] for what name to use in the config.
+  changing the video backend (see `backend` in [dolphin
+  settings](#dolphin-settings) for possible options).
 
 * Does not play nicely with WSL, since dolphin expects all paths to be relative
   to Windows.
