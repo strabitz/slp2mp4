@@ -13,6 +13,10 @@ import slp2mp4.version as version
 import tomli_w
 
 
+def _snake_to_title(string):
+    return (" ").join(string.split("_")).title()
+
+
 class ConfigDialog(tk.Toplevel):
     """Configuration dialog for slp2mp4 settings"""
 
@@ -377,13 +381,16 @@ class Slp2Mp4GUI:
         mode_frame = ttk.LabelFrame(self.root, text="Conversion Mode", padding=10)
         mode_frame.pack(fill="x", padx=10, pady=5)
 
-        self.mode_var = tk.StringVar(value=list(modes.MODES.keys())[-1])
-        for mode in modes.MODES:
+        default_mode_index = -1
+        mode_snakes = list(modes.MODES.keys())
+        mode_titles = [_snake_to_title(mode_name) for mode_name in modes.MODES]
+        self.mode_var = tk.StringVar(value=mode_snakes[-1])
+        for snake, title in zip(mode_snakes, mode_titles):
             ttk.Radiobutton(
                 mode_frame,
-                text=mode,
+                text=title,
                 variable=self.mode_var,
-                value=mode,
+                value=snake,
                 command=self.update_input_section,
             ).pack(side="left", padx=5)
 
