@@ -54,6 +54,7 @@ class Mode:
                 out += f"{output.output}\n"
                 for i in output.inputs:
                     out += f"\t{i}\n"
+                out += "\n"
             return out
         else:
             self.output_directory.mkdir(parents=True, exist_ok=True)
