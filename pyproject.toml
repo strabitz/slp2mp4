@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
@@ -20,10 +20,9 @@ classifiers = [
 ]
 dependencies = [
     "pathvalidate",
+    "py-slippi>=1.6.0",  # Added for clipping feature
 ]
-dynamic = [
-    "version",
-]
+version = "3.0.5"  # Static version instead of dynamic
 
 # TODO: Checks for tkinter / tcl
 [project.optional-dependencies]
@@ -36,12 +35,6 @@ include = [
   "src/slp2mp4/*.py",
   "src/slp2mp4/*.toml",
 ]
-
-[tool.hatch.version]
-source = "vcs"
-
-[tool.hatch.build.hooks.vcs]
-version-file = "src/slp2mp4/version.py"
 
 [project.urls]
 Homepage = "https://github.com/davisdude/slp2mp4"
