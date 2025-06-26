@@ -28,8 +28,13 @@ class Zip(Directory):
         else:
             self._add_slps(location, path, fromzip)
             for child in path.iterdir():
-                if child.is_dir() or zipfile.is_zipfile(child):
-                    self._recursive_find(location / child, child, fromzip)
+                if child.is_dir():
+                    self._recursive_find(location / child.name, child, fromzip)
+                elif zipfile.is_zipfile(child):
+                    name = child.name
+                    if child.suffix.lower() == ".zip":
+                        name = child.stem
+                    self._recursive_find(location / name, child, fromzip)
 
     def _add_slps(self, location, path, fromzip):
         if not fromzip:
